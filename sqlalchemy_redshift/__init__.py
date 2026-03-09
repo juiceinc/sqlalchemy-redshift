@@ -1,4 +1,11 @@
-from pkg_resources import DistributionNotFound, get_distribution, parse_version
+from importlib.metadata import PackageNotFoundError as DistributionNotFound, version as _version
+from packaging.version import Version as parse_version
+
+def get_distribution(name):
+    class _Dist:
+        def __init__(self, n):
+            self.version = _version(n)
+    return _Dist(name)
 
 for package in ['psycopg2', 'psycopg2-binary', 'psycopg2cffi']:
     try:

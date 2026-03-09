@@ -4,7 +4,7 @@ import re
 from collections import defaultdict, namedtuple
 from logging import getLogger
 
-import pkg_resources
+from importlib import resources
 import sqlalchemy as sa
 from packaging.version import Version
 from sqlalchemy import inspect
@@ -1461,12 +1461,12 @@ class Psycopg2RedshiftDialectMixin(RedshiftDialectMixin):
         Overrides interface
         :meth:`~sqlalchemy.engine.interfaces.Dialect.create_connect_args`.
         """
+        path_ctx = resources.files("sqlalchemy_redshift").joinpath('redshift-ca-bundle.crt')
+
         default_args = {
             'sslmode': 'verify-full',
-            'sslrootcert': pkg_resources.resource_filename(
-                __name__,
-                'redshift-ca-bundle.crt'
-            ),
+            # as_file() ensures the resource exists as a physical file on the disk
+            'sslrootcert': str(path_ctx),
         }
         cargs, cparams = (
             super(Psycopg2RedshiftDialectMixin, self).create_connect_args(

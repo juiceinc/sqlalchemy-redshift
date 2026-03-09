@@ -5,6 +5,7 @@ def get_distribution(name):
     class _Dist:
         def __init__(self, n):
             self.version = _version(n)
+            self.parsed_version = parse_version(self.version)
     return _Dist(name)
 
 for package in ['psycopg2', 'psycopg2-binary', 'psycopg2cffi']:
